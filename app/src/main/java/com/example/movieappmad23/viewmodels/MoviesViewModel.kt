@@ -4,9 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.movieappmad23.common.Validator
 import com.example.movieappmad23.models.Movie
 import com.example.movieappmad23.models.getMovies
+import com.example.movieappmad23.repositories.MovieRepository
 import com.example.movieappmad23.screens.AddMovieUIEvent
 import com.example.movieappmad23.screens.AddMovieUiState
 import com.example.movieappmad23.screens.hasError
@@ -15,11 +17,28 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 // inherit from ViewModel class
-class MoviesViewModel: ViewModel() {
-    private val _movieListState = MutableStateFlow(listOf<Movie>())
+class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
+    private val _movieListState = MutableStateFlow(listOf<Movie>()) //empty list of movies
     val movieListState: StateFlow<List<Movie>> = _movieListState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            //db operations are async, we need threats for that
+
+            //read data through repository
+            //everytime the list has changed in the DB (that's why we use flow), it will be collected
+            repository.getAllMovies().collect{ movieList ->
+                if(!movieList.isNullOrEmpty()) { //only collect if not null
+                    _movieListState.value = movieList
+
+                }
+
+            }
+        }
+    }
 
     var movieUiState by mutableStateOf(AddMovieUiState())
         private set
@@ -77,10 +96,10 @@ class MoviesViewModel: ViewModel() {
     fun saveMovie() {
         val movie = movieUiState.toMovie()
 
-        _movieListState.update {
-            val list: MutableList<Movie> = _movieListState.value.toMutableList()
-            list.add(movie)
-            list
-        }
+        repository.add(movie)
+    }
+
+    fun deleteMovie(movie: Movie) {
+        repository.delete(movie)
     }
 }
