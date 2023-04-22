@@ -24,7 +24,7 @@ abstract class MovieDatabase: RoomDatabase() { //inherits from RoomDatabase
         fun getDatabase (context: Context): MovieDatabase {
         return Instance ?: synchronized( this ) {
                 Room.databaseBuilder(context, MovieDatabase::class.java, "movie_db")
-                    .addTypeConverter(Converters::class)
+                    //.addTypeConverter(Converters::class)
                     .fallbackToDestructiveMigration() // if schema changes wipe the whole schema --- other migration strategy would go here
                     .build() // BuilderPattern --> creates an instance of the DB
                     .also {

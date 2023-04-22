@@ -3,20 +3,21 @@ package com.example.movieappmad23.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 
 @Entity
 data class Movie(
-    @PrimaryKey val id:String, //autogenerate?
+    @PrimaryKey val id:String = UUID.randomUUID().toString(), //autogenerate? UUID.randomUUID().toString()
     @ColumnInfo val title:String,
     //if I want to set a different name, then @ColumnInfo(name="different_name_here") val title:String, - if not it will just be called title
     @ColumnInfo val year: String,
     @ColumnInfo val genre: List<Genre>,
     @ColumnInfo val director: String,
     @ColumnInfo val actors: String,
-    @ColumnInfo val plot: String,
+    @ColumnInfo val plot: String = "No Plot Available",
     @ColumnInfo val images: List<String>,
-    @ColumnInfo val rating: Double,
+    @ColumnInfo val rating: Double = 0.0,
     @ColumnInfo var isFavorite: Boolean = false //@todo mutable state of maybe?
 
 )
