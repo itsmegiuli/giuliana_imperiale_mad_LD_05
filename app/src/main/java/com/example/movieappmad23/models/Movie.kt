@@ -1,12 +1,9 @@
 package com.example.movieappmad23.models
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
+
 
 @Entity
 data class Movie(
@@ -14,31 +11,15 @@ data class Movie(
     @ColumnInfo val title:String,
     //if I want to set a different name, then @ColumnInfo(name="different_name_here") val title:String, - if not it will just be called title
     @ColumnInfo val year: String,
-    @ColumnInfo val genre: List<Genre> = listOf(),
+    @ColumnInfo val genre: List<Genre>,
     @ColumnInfo val director: String,
     @ColumnInfo val actors: String,
-    @ColumnInfo val plot: String = "No plot available",
-    @ColumnInfo val images: List<String> = listOf(),
-    @ColumnInfo val rating: Double = 0.0,
+    @ColumnInfo val plot: String,
+    @ColumnInfo val images: List<String>,
+    @ColumnInfo val rating: Double,
     @ColumnInfo var isFavorite: Boolean = false //@todo mutable state of maybe?
 
 )
-
-class OLDMovie(
-    val id: String = UUID.randomUUID().toString(),
-    val title: String = "",
-    val year: String = "",
-    val genre: List<Genre> = listOf(),
-    val director: String = "",
-    val actors: String = "",
-    val plot: String = "No plot available",
-    val images: List<String> = listOf(),
-    val rating: Double = 0.0,
-    initialIsFavorite: Boolean = false
-) {
-    var isFavorite by mutableStateOf(initialIsFavorite)
-}
-
 fun getMovies(): List<Movie> {
     return listOf(
         Movie(id = "tt0499549",
