@@ -14,5 +14,5 @@ class MovieRepository(private val movieDao: MovieDao) {
     suspend fun update(movie: Movie) = movieDao.update(movie)   //update
     fun getAllMovies(): Flow<List<Movie>> = movieDao.getAllMovies()
     fun getAllFavorites(): Flow<List<Movie>> = movieDao.getAllFavorites()
-    suspend fun getMovieById(id: String) = movieDao.getMovieById(id)
+    fun getMovieById(id: String) = movieDao.getMovieById(id)
 }

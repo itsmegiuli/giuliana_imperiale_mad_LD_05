@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.ui.platform.LocalContext
 import com.example.movieappmad23.data.MovieDatabase
 import com.example.movieappmad23.repositories.MovieRepository
+import com.example.movieappmad23.viewmodels.DetailsViewModelFactory
 import com.example.movieappmad23.viewmodels.FavoritesViewModelFactory
 import com.example.movieappmad23.viewmodels.MoviesViewModel
 import com.example.movieappmad23.viewmodels.MoviesViewModelFactory
@@ -23,4 +24,11 @@ object InjectorUtils {
         val repository = getMoviesRepository(context)
         return FavoritesViewModelFactory(repository)
     }
+
+    fun provideDetailsViewModelFactory(context: Context) : DetailsViewModelFactory {
+
+        val repository = getMoviesRepository(context)
+        return DetailsViewModelFactory(repository)
+    }
+
 }

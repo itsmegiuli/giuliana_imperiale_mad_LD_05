@@ -12,6 +12,8 @@ import com.example.movieappmad23.data.MovieDatabase
 import com.example.movieappmad23.repositories.MovieRepository
 import com.example.movieappmad23.screens.*
 import com.example.movieappmad23.utils.InjectorUtils
+import com.example.movieappmad23.viewmodels.DetailsViewModel
+import com.example.movieappmad23.viewmodels.FavoritesViewModel
 import com.example.movieappmad23.viewmodels.MoviesViewModel
 import com.example.movieappmad23.viewmodels.MoviesViewModelFactory
 
@@ -32,6 +34,8 @@ fun Navigation() {
     //so use viewModelFactory (create class)
 
 
+    val favoritesViewModel : FavoritesViewModel = viewModel(factory = InjectorUtils.provideFavoritesViewModelFactory(LocalContext.current))
+    val detailsViewModel : DetailsViewModel = viewModel(factory = InjectorUtils.provideDetailsViewModelFactory(LocalContext.current))
 
     NavHost(navController = navController, startDestination = Screen.MainScreen.route) {
         composable(route = Screen.MainScreen.route){
@@ -39,7 +43,7 @@ fun Navigation() {
         }
 
         composable(Screen.FavoriteScreen.route) {
-            FavoriteScreen(navController = navController)
+            FavoriteScreen(navController = navController, favoritesViewModel = favoritesViewModel )
         }
         
         composable(Screen.AddMovieScreen.route) {
@@ -51,9 +55,12 @@ fun Navigation() {
             Screen.DetailScreen.route,
             arguments = listOf(navArgument(name = DETAIL_ARGUMENT_KEY) {type = NavType.StringType})
         ) { backStackEntry ->    // backstack contains all information from navhost
-            DetailScreen(navController = navController,
-                moviesViewModel = movieViewModel,
-                movieId = backStackEntry.arguments?.getString(DETAIL_ARGUMENT_KEY))   // get the argument from navhost that will be passed
+            val movieId = backStackEntry.arguments?.getString(DETAIL_ARGUMENT_KEY)
+            if (movieId != null) { //work around, idk, please work
+                DetailScreen(navController = navController,
+                    detailsViewModel = detailsViewModel,
+                    movieId = movieId)   // get the argument from navhost that will be passed
+            }
         }
     }
 }

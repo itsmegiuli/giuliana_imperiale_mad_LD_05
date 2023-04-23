@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.movieappmad23.models.Movie
-import com.example.movieappmad23.viewmodels.MoviesViewModel
+import com.example.movieappmad23.viewmodels.DetailsViewModel
 import com.example.movieappmad23.widgets.HorizontalScrollableImageView
 import com.example.movieappmad23.widgets.MovieRow
 import com.example.movieappmad23.widgets.SimpleTopAppBar
@@ -18,26 +18,27 @@ import kotlinx.coroutines.launch
 @Composable
 fun DetailScreen(
     navController: NavController,
-    moviesViewModel: MoviesViewModel,
-    movieId:String?){
+    detailsViewModel: DetailsViewModel,
+    movieId:String){
     val coroutineScope = rememberCoroutineScope()
-    movieId?.let {
-        val movie = moviesViewModel.movieListState.value.filter { it.id == movieId  }[0]
+    val movieById = detailsViewModel.getMovieById(movieId)
+
+    movieId.let {
         val scaffoldState = rememberScaffoldState() // this contains the `SnackbarHostState`
 
         Scaffold(scaffoldState = scaffoldState, // attaching `scaffoldState` to the `Scaffold`
             topBar = {
                 SimpleTopAppBar(arrowBackClicked = { navController.popBackStack() }) {
-                    Text(text = movie.title)
+                    Text(text = movieById.title)
                 }
             },
         ) { padding ->
             MainContent(
                 Modifier.padding(padding),
-                movie,
+                movieById,
                 onFavClick = { movie ->
                     coroutineScope.launch {
-                        moviesViewModel.updateFavMovie(movie)
+                        detailsViewModel.updateFavMovie(movie)
                     }
                 }
             )

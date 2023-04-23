@@ -25,10 +25,10 @@ import com.example.movieappmad23.viewmodels.MoviesViewModel
 
 
 @Composable
-fun FavoriteScreen(navController: NavController){
+fun FavoriteScreen(navController: NavController, favoritesViewModel: FavoritesViewModel){
     val coroutineScope = rememberCoroutineScope()
 
-    val favoritesViewModel: FavoritesViewModel = viewModel(factory = InjectorUtils.provideFavoritesViewModelFactory(LocalContext.current))
+  //  val favoritesViewModel: FavoritesViewModel = viewModel(factory = InjectorUtils.provideFavoritesViewModelFactory(LocalContext.current))
 
     val faveMovieListState by favoritesViewModel.favMovieListState.collectAsState()
 
