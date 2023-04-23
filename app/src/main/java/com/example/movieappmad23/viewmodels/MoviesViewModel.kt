@@ -14,6 +14,7 @@ import com.example.movieappmad23.screens.AddMovieUIEvent
 import com.example.movieappmad23.screens.AddMovieUiState
 import com.example.movieappmad23.screens.hasError
 import com.example.movieappmad23.screens.toMovie
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,23 +32,25 @@ class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
 
             //read data through repository
             //everytime the list has changed in the DB (that's why we use flow), it will be collected
+            repository.getAllMovies().collect{ movieList ->
+                if(!movieList.isNullOrEmpty()) { //only collect if not null
+                    _movieListState.value = movieList
 
-            _movieListState = MutableStateFlow(repository.getAllMovies())
+                }
+
+            }
         }
     }
 
     var movieUiState by mutableStateOf(AddMovieUiState())
         private set
 
+    val favoriteMovies: List<Movie>
+        get() = _movieListState.value.filter { it.isFavorite }
+
     init {
-        viewModelScope.launch {
-            val favoriteMovies: List<Movie> = repository.getAllFavorites()
-            //get() = _movieListState.value.filter { it.isFavorite }
-        }
+        _movieListState.value = getMovies()
     }
-    //init {
-      //  _movieListState.value = getMovies()
-    //}
 
     fun updateUIState(newMovieUiState: AddMovieUiState, event: AddMovieUIEvent){
         var state = AddMovieUiState()   // this is needed because copy always creates a new instance
@@ -87,7 +90,7 @@ class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
         movieUiState = state.copy(actionEnabled = !newMovieUiState.hasError())
     }
 
-    fun updateFavoriteMovies(movie: Movie) = getMovies().find { it.id == movie.id }?.let { movie ->
+    fun updateFavoriteMovies(movie: Movie) = _movieListState.value.find { it.id == movie.id }?.let { movie ->
         movie.isFavorite = !movie.isFavorite
     }
 
@@ -102,7 +105,7 @@ class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
         repository.delete(movie)
     }
 
-    suspend fun getFavoriteMovies() : List<Movie> {
+    suspend fun getFavoriteMovies() : Flow<List<Movie>> {
         return repository.getAllFavorites()
     }
 }

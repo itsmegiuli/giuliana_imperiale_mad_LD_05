@@ -18,10 +18,11 @@ interface MovieDao {
     suspend fun update (movie: Movie)
 
     @Query("SELECT * FROM movie") // get all movies
-    suspend fun getAllMovies(): List<Movie> //Flow<List<Movie>>
+    fun getAllMovies(): Flow<List<Movie>>
+    //no suspend cuz of error: Dao functions that have a suspend modifier must not return a deferred/async type (kotlinx.coroutines.flow.Flow). Most probably this is an error. Consider changing the return type or removing the suspend modifier.
 
     @Query("SELECT * FROM movie where isFavorite = true") //get all favorits
-    suspend fun getAllFavorites(): List<Movie>
+    fun getAllFavorites(): Flow<List<Movie>>
 
     @Query("SELECT * FROM movie where id =:id") //get movie by id
     suspend fun getMovieById(id: String): Movie
