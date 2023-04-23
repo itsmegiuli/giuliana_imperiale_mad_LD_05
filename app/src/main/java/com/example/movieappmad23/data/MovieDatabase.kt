@@ -10,11 +10,11 @@ import com.example.movieappmad23.utils.Converters
 
 @Database(
     entities = [Movie::class], //here come ALL entities that this database will manage
-    version = 9, //important for migrations
-    exportSchema = false //true=schema will export
+    version = 10, //important for migrations
+    exportSchema = true //true=schema will export
 )
 @TypeConverters(Converters::class)
-abstract class MovieDatabase: RoomDatabase() { //inherits from RoomDatabase
+abstract class MovieDatabase : RoomDatabase() { //inherits from RoomDatabase
     abstract fun movieDao(): MovieDao
     // if more entities --> more DAOs here
     companion object {
