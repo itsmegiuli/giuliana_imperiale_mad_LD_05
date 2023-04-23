@@ -1,31 +1,39 @@
 package com.example.movieappmad23.viewmodels
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movieappmad23.common.Validator
 import com.example.movieappmad23.models.Movie
-import com.example.movieappmad23.models.getMovies
 import com.example.movieappmad23.repositories.MovieRepository
-import com.example.movieappmad23.screens.AddMovieUIEvent
-import com.example.movieappmad23.screens.AddMovieUiState
-import com.example.movieappmad23.screens.hasError
-import com.example.movieappmad23.screens.toMovie
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-// inherit from ViewModel class
-class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
-    private val _movieListState = MutableStateFlow(listOf<Movie>()) //empty list of movies
-    val movieListState: StateFlow<List<Movie>> = _movieListState.asStateFlow()
+class FavoritesViewModel(private val movieRepository: MovieRepository): ViewModel() {
+// inherits from ViewModel class
+
+    private val _favMovieListState = MutableStateFlow(listOf<Movie>())
+    val favMovieListState: StateFlow<List<Movie>> = _favMovieListState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+           movieRepository.getAllFavorites().collect{ movieList ->
+               _favMovieListState.value = movieList
+
+            }
+        }
+    }
 
 
+    suspend fun updateFavMovie(movie: Movie) {
+        movie.isFavorite = !movie.isFavorite
+        movieRepository.update(movie)
+    }
+}
+
+
+
+/*
     init {
         viewModelScope.launch {
             //db operations are async, we need threats for that
@@ -45,11 +53,12 @@ class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
     var movieUiState by mutableStateOf(AddMovieUiState())
         private set
 
+    val favoriteMovies: Flow<List<Movie>> = _movieListState.asStateFlow()
+
     init {
         _movieListState.value = getMovies()
     }
 
-    //for add movie
     fun updateUIState(newMovieUiState: AddMovieUiState, event: AddMovieUIEvent){
         var state = AddMovieUiState()   // this is needed because copy always creates a new instance
 
@@ -88,23 +97,25 @@ class MoviesViewModel(private val repository: MovieRepository): ViewModel() {
         movieUiState = state.copy(actionEnabled = !newMovieUiState.hasError())
     }
 
+    fun updateFavoriteMovies(movie: Movie) = _movieListState.value.find { it.id == movie.id }?.let { movie ->
+        movie.isFavorite = !movie.isFavorite
+    }
 
 
-//for addmovie
     suspend fun saveMovie() {
         val movie = movieUiState.toMovie()
+
         repository.add(movie)
     }
 
-    //for add movie screen
     suspend fun deleteMovie(movie: Movie) {
         repository.delete(movie)
     }
 
-
-    suspend fun updateFavMovie(movie: Movie) {
-        movie.isFavorite = !movie.isFavorite
-        repository.update(movie)
+    suspend fun getFavoriteMovies() : Flow<List<Movie>> {
+        return repository.getAllFavorites()
     }
 }
 
+
+ */

@@ -12,7 +12,7 @@ class MovieRepository(private val movieDao: MovieDao) {
     suspend fun add(movie: Movie) = movieDao.add(movie)         //insert
     suspend fun delete(movie: Movie) = movieDao.delete(movie)   //delete
     suspend fun update(movie: Movie) = movieDao.update(movie)   //update
-    suspend fun getAllMovies(): Flow<List<Movie>> = movieDao.getAllMovies()
-    suspend fun getAllFavorites(): Flow<List<Movie>> = movieDao.getAllFavorites()
+    fun getAllMovies(): Flow<List<Movie>> = movieDao.getAllMovies()
+    fun getAllFavorites(): Flow<List<Movie>> = movieDao.getAllFavorites()
     suspend fun getMovieById(id: String) = movieDao.getMovieById(id)
 }

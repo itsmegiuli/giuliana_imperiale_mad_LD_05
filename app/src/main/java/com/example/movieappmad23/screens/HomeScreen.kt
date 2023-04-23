@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -20,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.movieappmad23.viewmodels.MoviesViewModel
 import com.example.movieappmad23.widgets.HomeTopAppBar
 import com.example.movieappmad23.widgets.MovieRow
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -76,6 +78,7 @@ fun MovieList(
     navController: NavController,
     viewModel: MoviesViewModel
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val movieListState by viewModel.movieListState.collectAsState()
 
     LazyColumn (
@@ -90,8 +93,10 @@ fun MovieList(
                 onMovieRowClick = { movieId ->
                     navController.navigate(Screen.DetailScreen.withId(movieId))
                 },
-                onFavClick  = { movie ->
-                    viewModel.updateFavoriteMovies(movie)
+                onFavClick = { movie ->
+                    coroutineScope.launch {
+                        viewModel.updateFavMovie(movie)
+                    }
                 }
             )
         }

@@ -11,20 +11,23 @@ import androidx.navigation.navArgument
 import com.example.movieappmad23.data.MovieDatabase
 import com.example.movieappmad23.repositories.MovieRepository
 import com.example.movieappmad23.screens.*
+import com.example.movieappmad23.utils.InjectorUtils
 import com.example.movieappmad23.viewmodels.MoviesViewModel
 import com.example.movieappmad23.viewmodels.MoviesViewModelFactory
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-
+/*** following lines are now in InjectorUtils to avoid boilerplate code */
 // inside a composable
-    val db = MovieDatabase.getDatabase(LocalContext.current) //inside composable
-    val repository = MovieRepository(movieDao = db.movieDao())
-    val factory = MoviesViewModelFactory(repository)
+   // val db = MovieDatabase.getDatabase(LocalContext.current) //inside composable
+    //val repository = MovieRepository(movieDao = db.movieDao())
+    //val factory = MoviesViewModelFactory(repository)
+/** */
 
     //now we can add a parameter (factory = factory)
-    val movieViewModel: MoviesViewModel = viewModel(factory = factory)
+    /** new: InjectorUtils*/
+    val movieViewModel: MoviesViewModel = viewModel(factory = InjectorUtils.provideMoviesViewModelFactory(LocalContext.current))
     //before: viewModel() no parameter could be added and we need repository as parameter
     //so use viewModelFactory (create class)
 
@@ -36,7 +39,7 @@ fun Navigation() {
         }
 
         composable(Screen.FavoriteScreen.route) {
-            FavoriteScreen(navController = navController, moviesViewModel = movieViewModel)
+            FavoriteScreen(navController = navController)
         }
         
         composable(Screen.AddMovieScreen.route) {
