@@ -28,6 +28,8 @@ fun Navigation() {
     //before: viewModel() no parameter could be added and we need repository as parameter
     //so use viewModelFactory (create class)
 
+
+
     NavHost(navController = navController, startDestination = Screen.MainScreen.route) {
         composable(route = Screen.MainScreen.route){
             HomeScreen(navController = navController, moviesViewModel = movieViewModel)

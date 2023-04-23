@@ -9,22 +9,22 @@ interface MovieDao {
     // insert, delete, update: pre-defined annotations
     //CRUD (Create, Read, Update, Delete)
     @Insert
-    fun add (movie: Movie)
+    suspend fun add (movie: Movie)
 
     @Delete
-    fun delete (movie: Movie)
+    suspend fun delete (movie: Movie)
 
     @Update
-    fun update (movie: Movie)
+    suspend fun update (movie: Movie)
 
     @Query("SELECT * FROM movie") // get all movies
-    fun getAllMovies(): Flow<List<Movie>>
+    suspend fun getAllMovies(): List<Movie> //Flow<List<Movie>>
 
     @Query("SELECT * FROM movie where isFavorite = true") //get all favorits
-    fun getAllFavorites(): List<Movie>
+    suspend fun getAllFavorites(): List<Movie>
 
     @Query("SELECT * FROM movie where id =:id") //get movie by id
-    fun getMovieById(id: String): Movie
+    suspend fun getMovieById(id: String): Movie
 
 
 }
